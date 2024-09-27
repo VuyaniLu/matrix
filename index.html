@@ -22,14 +22,27 @@
       top: 0;
       left: 0;
     }
+
+    #message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: red;
+      font-size: 80px;
+      font-family: monospace;
+      display: none;
+    }
   </style>
 </head>
 <body>
   <canvas id="matrixCanvas"></canvas>
+  <div id="message">FUCK YOU</div>
 
   <script>
     const canvas = document.getElementById('matrixCanvas');
     const context = canvas.getContext('2d');
+    const message = document.getElementById('message');
 
     // Set canvas size to full window
     canvas.width = window.innerWidth;
@@ -53,36 +66,57 @@
       drops[i] = 1; // Each drop starts at the top
     }
 
+    let isPaused = false;
+
     // Function to draw the matrix rain effect
     function drawMatrix() {
-      // Semi-transparent background to create the trailing effect
-      context.fillStyle = "rgba(0, 0, 0, 0.05)";
-      context.fillRect(0, 0, canvas.width, canvas.height);
+      if (!isPaused) {
+        // Semi-transparent background to create the trailing effect
+        context.fillStyle = "rgba(0, 0, 0, 0.05)";
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Set the font style and color for the falling characters
-      context.fillStyle = "#0F0"; // Green color for the Matrix effect
-      context.font = fontSize + "px monospace";
+        // Set the font style and color for the falling characters
+        context.fillStyle = "#0F0"; // Green color for the Matrix effect
+        context.font = fontSize + "px monospace";
 
-      // Loop through the drops array and draw the characters
-      for (let i = 0; i < drops.length; i++) {
-        // Random character for each drop
-        const text = characters[Math.floor(Math.random() * characters.length)];
+        // Loop through the drops array and draw the characters
+        for (let i = 0; i < drops.length; i++) {
+          // Random character for each drop
+          const text = characters[Math.floor(Math.random() * characters.length)];
 
-        // Draw the character at the current position of the drop
-        context.fillText(text, i * fontSize, drops[i] * fontSize);
+          // Draw the character at the current position of the drop
+          context.fillText(text, i * fontSize, drops[i] * fontSize);
 
-        // Randomly reset the drop after it falls off screen
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
+          // Randomly reset the drop after it falls off screen
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+
+          // Move the drop down
+          drops[i]++;
         }
-
-        // Move the drop down
-        drops[i]++;
       }
+    }
+
+    // Function to display the message
+    function showMessage() {
+      isPaused = true;  // Pause the matrix rain
+      message.style.display = 'block';  // Show the "FUCK YOU" message
+
+      // After 3 seconds, hide the message and resume the matrix rain
+      setTimeout(() => {
+        message.style.display = 'none';
+        isPaused = false;
+      }, 3000);
     }
 
     // Set the drawing function to repeat every 33 milliseconds (~30 frames per second)
     setInterval(drawMatrix, 33);
+
+    // After 10 seconds, stop the matrix rain and display the message
+    setTimeout(showMessage, 10000);
+
+    // You can repeat this as many times as needed by re-calling showMessage() at intervals
   </script>
 </body>
 </html>
