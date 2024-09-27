@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrix Code Rain</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: black;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('matrixCanvas');
+    const context = canvas.getContext('2d');
+
+    // Set canvas size to full window
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Characters used for matrix rain (you can change this to anything)
+    const matrixCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()-=+<>";
+
+    // Split the string into individual characters
+    const characters = matrixCharacters.split("");
+
+    // Define font size and the number of columns
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+
+    // Array to store the drops position
+    const drops = [];
+
+    // Initialize drops for each column
+    for (let i = 0; i < columns; i++) {
+      drops[i] = 1; // Each drop starts at the top
+    }
+
+    // Function to draw the matrix rain effect
+    function drawMatrix() {
+      // Semi-transparent background to create the trailing effect
+      context.fillStyle = "rgba(0, 0, 0, 0.05)";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Set the font style and color for the falling characters
+      context.fillStyle = "#0F0"; // Green color for the Matrix effect
+      context.font = fontSize + "px monospace";
+
+      // Loop through the drops array and draw the characters
+      for (let i = 0; i < drops.length; i++) {
+        // Random character for each drop
+        const text = characters[Math.floor(Math.random() * characters.length)];
+
+        // Draw the character at the current position of the drop
+        context.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        // Randomly reset the drop after it falls off screen
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        // Move the drop down
+        drops[i]++;
+      }
+    }
+
+    // Set the drawing function to repeat every 33 milliseconds (~30 frames per second)
+    setInterval(drawMatrix, 33);
+  </script>
+</body>
+</html>
